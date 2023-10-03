@@ -1,25 +1,46 @@
-/*
-  Warnings:
+-- CreateTable
+CREATE TABLE "Users" (
+    "id" VARCHAR NOT NULL,
+    "first_name" VARCHAR NOT NULL,
+    "last_name" VARCHAR NOT NULL,
+    "gender" VARCHAR NOT NULL,
+    "username" VARCHAR,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "currentWeight" DOUBLE PRECISION NOT NULL,
+    "weightHistory" JSONB NOT NULL,
 
-  - You are about to drop the column `userId` on the `Notifications` table. All the data in the column will be lost.
-  - You are about to drop the column `userId` on the `WorkoutPlans` table. All the data in the column will be lost.
-  - Added the required column `user_id` to the `Notifications` table without a default value. This is not possible if the table is not empty.
-  - Added the required column `user_id` to the `WorkoutPlans` table without a default value. This is not possible if the table is not empty.
+    CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
+);
 
-*/
--- DropForeignKey
-ALTER TABLE "Notifications" DROP CONSTRAINT "Notifications_userId_fkey";
+-- CreateTable
+CREATE TABLE "WorkoutPlans" (
+    "id" VARCHAR NOT NULL,
+    "name" VARCHAR NOT NULL,
+    "user_id" VARCHAR NOT NULL,
+    "primary_goal" VARCHAR NOT NULL,
+    "training_days" VARCHAR[],
+    "plan" JSONB NOT NULL,
+    "duration" INTEGER NOT NULL,
+    "start_date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "end_date" TIMESTAMP(3) NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+    "completed" BOOLEAN NOT NULL DEFAULT false,
 
--- DropForeignKey
-ALTER TABLE "WorkoutPlans" DROP CONSTRAINT "WorkoutPlans_userId_fkey";
+    CONSTRAINT "WorkoutPlans_pkey" PRIMARY KEY ("id")
+);
 
--- AlterTable
-ALTER TABLE "Notifications" DROP COLUMN "userId",
-ADD COLUMN     "user_id" VARCHAR NOT NULL;
+-- CreateTable
+CREATE TABLE "Notifications" (
+    "id" VARCHAR NOT NULL,
+    "user_id" VARCHAR NOT NULL,
+    "title" VARCHAR NOT NULL,
+    "content" TEXT NOT NULL,
+    "viewed" BOOLEAN NOT NULL DEFAULT false,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
--- AlterTable
-ALTER TABLE "WorkoutPlans" DROP COLUMN "userId",
-ADD COLUMN     "user_id" VARCHAR NOT NULL;
+    CONSTRAINT "Notifications_pkey" PRIMARY KEY ("id")
+);
 
 -- CreateTable
 CREATE TABLE "Posts" (
@@ -56,6 +77,27 @@ CREATE TABLE "Likes" (
 
     CONSTRAINT "Likes_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
+
+-- CreateIndex
+CREATE INDEX "Users_id_username_idx" ON "Users"("id", "username");
+
+-- CreateIndex
+CREATE INDEX "WorkoutPlans_id_user_id_idx" ON "WorkoutPlans"("id", "user_id");
+
+-- CreateIndex
+CREATE INDEX "Notifications_id_user_id_idx" ON "Notifications"("id", "user_id");
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Posts_slug_key" ON "Posts"("slug");
+
+-- CreateIndex
+CREATE INDEX "Posts_id_author_id_idx" ON "Posts"("id", "author_id");
+
+-- CreateIndex
+CREATE INDEX "Comments_id_post_id_author_id_idx" ON "Comments"("id", "post_id", "author_id");
 
 -- AddForeignKey
 ALTER TABLE "WorkoutPlans" ADD CONSTRAINT "WorkoutPlans_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

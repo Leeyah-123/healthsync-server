@@ -11,12 +11,16 @@ datasource db {
 }
 
 model User {
-  id        String   @id @default(cuid()) @db.VarChar()
-  firstName String   @map("first_name") @db.VarChar()
-  lastName  String   @map("last_name") @db.VarChar()
-  gender    String   @db.VarChar()
-  username  String?  @db.VarChar()
-  createdAt DateTime @default(now()) @map("created_at")
+  id            String   @id @default(cuid()) @db.VarChar()
+  firstName     String   @map("first_name") @db.VarChar()
+  lastName      String   @map("last_name") @db.VarChar()
+  gender        String   @db.VarChar()
+  username      String?  @unique @db.VarChar()
+  createdAt     DateTime @default(now()) @map("created_at")
+  // user's current weight in kg
+  currentWeight Float
+  // date to weight json object
+  weightHistory Json
 
   // relations
   notifications Notification[]
@@ -25,11 +29,13 @@ model User {
   comments      Comment[]
   likes         Like[]
 
+  @@index([id, username])
   @@map("Users")
 }
 
 model WorkoutPlan {
   id           String   @id @default(cuid()) @db.VarChar()
+  name         String   @db.VarChar()
   userId       String   @map("user_id") @db.VarChar()
   primaryGoal  String   @map("primary_goal") @db.VarChar()
   trainingDays String[] @map("training_days") @db.VarChar()
@@ -45,6 +51,7 @@ model WorkoutPlan {
   // relations  
   author User @relation(fields: [userId], references: [id])
 
+  @@index([id, userId])
   @@map("WorkoutPlans")
 }
 
@@ -59,6 +66,7 @@ model Notification {
   // relations
   user User @relation(fields: [userId], references: [id])
 
+  @@index([id, userId])
   @@map("Notifications")
 }
 
@@ -68,7 +76,7 @@ model Post {
   title     String   @db.VarChar()
   content   String   @db.Text()
   authorId  String   @map("author_id") @db.VarChar()
-  slug      String   @db.VarChar()
+  slug      String   @unique @db.VarChar()
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
@@ -77,6 +85,7 @@ model Post {
   comments Comment[]
   Like     Like[]
 
+  @@index([id, authorId])
   @@map("Posts")
 }
 
@@ -92,6 +101,7 @@ model Comment {
   post   Post @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
   author User @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
+  @@index([id, postId, authorId])
   @@map("Comments")
 }
 
