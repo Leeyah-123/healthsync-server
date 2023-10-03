@@ -10,3 +10,102 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  id        String   @id @default(cuid()) @db.VarChar()
+  firstName String   @map("first_name") @db.VarChar()
+  lastName  String   @map("last_name") @db.VarChar()
+  gender    String   @db.VarChar()
+  username  String?  @db.VarChar()
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // relations
+  notifications Notification[]
+  workoutPlans  WorkoutPlan[]
+  posts         Post[]
+  comments      Comment[]
+  likes         Like[]
+
+  @@map("Users")
+}
+
+model WorkoutPlan {
+  id           String   @id @default(cuid()) @db.VarChar()
+  userId       String   @map("user_id") @db.VarChar()
+  primaryGoal  String   @map("primary_goal") @db.VarChar()
+  trainingDays String[] @map("training_days") @db.VarChar()
+  plan         Json
+  // duration in minutes of workout plan
+  duration     Int
+  startDate    DateTime @default(now()) @map("start_date")
+  endDate      DateTime @map("end_date")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+  completed    Boolean  @default(false)
+
+  // relations  
+  author User @relation(fields: [userId], references: [id])
+
+  @@map("WorkoutPlans")
+}
+
+model Notification {
+  id        String   @id @default(cuid()) @db.VarChar()
+  userId    String   @map("user_id") @db.VarChar()
+  title     String   @db.VarChar()
+  content   String   @db.Text()
+  viewed    Boolean  @default(false)
+  createdAt DateTime @default(now()) @map("created_at")
+
+  // relations
+  user User @relation(fields: [userId], references: [id])
+
+  @@map("Notifications")
+}
+
+// Forum
+model Post {
+  id        String   @id @default(cuid()) @db.VarChar()
+  title     String   @db.VarChar()
+  content   String   @db.Text()
+  authorId  String   @map("author_id") @db.VarChar()
+  slug      String   @db.VarChar()
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relations
+  author   User      @relation(fields: [authorId], references: [id])
+  comments Comment[]
+  Like     Like[]
+
+  @@map("Posts")
+}
+
+model Comment {
+  id        String   @id @default(cuid()) @db.VarChar()
+  postId    String   @map("post_id") @db.VarChar()
+  authorId  String   @map("author_id") @db.VarChar()
+  comment   String   @db.VarChar()
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relations
+  post   Post @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+
+  @@map("Comments")
+}
+
+model Like {
+  id       String @id @default(cuid()) @db.VarChar()
+  postId   String @map("post_id") @db.VarChar()
+  authorId String @map("author_id") @db.VarChar()
+
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // relations
+  post   Post  @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  author User? @relation(fields: [authorId], references: [id])
+
+  @@map("Likes")
+}
