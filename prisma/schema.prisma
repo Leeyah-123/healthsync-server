@@ -14,13 +14,18 @@ model User {
   id            String   @id @default(cuid()) @db.VarChar()
   firstName     String   @map("first_name") @db.VarChar()
   lastName      String   @map("last_name") @db.VarChar()
+  email         String   @unique @db.VarChar(255)
+  password      String   @db.VarChar()
   gender        String   @db.VarChar()
   username      String?  @unique @db.VarChar()
   createdAt     DateTime @default(now()) @map("created_at")
+  role          String   @default("user") @db.VarChar(10)
   // user's current weight in kg
   currentWeight Float
   // date to weight json object
-  weightHistory Json
+  weightHistory Json?
+  // whether or not a user has been suspended by a forum moderator
+  suspended     Boolean  @default(false)
 
   // relations
   notifications Notification[]

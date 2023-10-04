@@ -3,11 +3,15 @@ CREATE TABLE "Users" (
     "id" VARCHAR NOT NULL,
     "first_name" VARCHAR NOT NULL,
     "last_name" VARCHAR NOT NULL,
+    "email" VARCHAR(255) NOT NULL,
+    "password" VARCHAR NOT NULL,
     "gender" VARCHAR NOT NULL,
     "username" VARCHAR,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "role" VARCHAR(10) NOT NULL DEFAULT 'user',
     "currentWeight" DOUBLE PRECISION NOT NULL,
-    "weightHistory" JSONB NOT NULL,
+    "weightHistory" JSONB,
+    "suspended" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -77,6 +81,9 @@ CREATE TABLE "Likes" (
 
     CONSTRAINT "Likes_pkey" PRIMARY KEY ("id")
 );
+
+-- CreateIndex
+CREATE UNIQUE INDEX "Users_email_key" ON "Users"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Users_username_key" ON "Users"("username");
