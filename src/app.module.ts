@@ -17,6 +17,9 @@ import { WorkoutPlanModule } from './workout_plan/workout_plan.module';
     ForumModule,
     WorkoutPlanModule,
     UsersModule,
+    JwtModule.register({
+      secret: process.env.JWT_SECRET,
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
