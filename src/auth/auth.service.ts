@@ -3,10 +3,9 @@ import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
 import { comparePassword, hashPassword } from 'src/utils/password.bcrypt';
-import { Role } from 'src/utils/common/types';
+import { AuthResponse, Role } from 'src/utils/common';
 import { LoginDto, SignupDto } from './dto';
 
-type AuthResponse = { token: string };
 @Injectable()
 export class AuthService {
   constructor(
