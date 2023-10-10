@@ -1,6 +1,7 @@
 import {
   Controller,
   Get,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
@@ -14,19 +15,19 @@ import { NotificationEntity } from './entities/notification.entity';
 import { NotificationsService } from './notifications.service';
 
 @Controller('notifications')
-@ApiTags('notifications')
+@ApiTags('Notifications')
 export class NotificationsController {
   constructor(private readonly notificationsService: NotificationsService) {}
 
   @Get()
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: [NotificationEntity],
     description: 'All notifications for current user',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User not found',
   })
@@ -34,7 +35,7 @@ export class NotificationsController {
     return this.notificationsService.getUserNotifications(req.user.id);
   }
 
-  @Patch('/{id}')
+  @Patch('/:id')
   @UseGuards(AuthGuard)
   @ApiParam({
     name: 'id',
@@ -43,12 +44,12 @@ export class NotificationsController {
     description: 'ID of notification',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: NotificationEntity,
     description: 'Updated notification record',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User not found or Notification not found',
   })

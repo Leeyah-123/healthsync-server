@@ -2,6 +2,8 @@ import {
   Body,
   Controller,
   Get,
+  HttpCode,
+  HttpStatus,
   Post,
   Request,
   UseGuards,
@@ -21,7 +23,7 @@ export class AuthController {
 
   @Post('login')
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: TokenResponseEntity,
   })
   login(@Body() dto: LoginDto) {
@@ -29,8 +31,9 @@ export class AuthController {
   }
 
   @Post('signup')
+  @HttpCode(HttpStatus.CREATED)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.CREATED,
     type: TokenResponseEntity,
   })
   signup(@Body() dto: SignupDto) {
@@ -40,7 +43,7 @@ export class AuthController {
   @Get('profile')
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
   })
   profile(@Request() req: RequestWithUser) {

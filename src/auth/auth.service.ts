@@ -6,9 +6,9 @@ import {
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
-import { AuthResponse } from 'src/utils/common';
 import { comparePassword, hashPassword } from 'src/utils/password.bcrypt';
 import { LoginDto, SignupDto } from './dto';
+import TokenResponseEntity from './entities/token-response.entity';
 
 @Injectable()
 export class AuthService {
@@ -17,7 +17,7 @@ export class AuthService {
     private jwtService: JwtService,
   ) {}
 
-  async signup(dto: SignupDto): Promise<AuthResponse> {
+  async signup(dto: SignupDto): Promise<TokenResponseEntity> {
     let user = await this.usersService.findUserByEmail(dto.email);
     if (user) throw new BadRequestException('Email already taken');
 
@@ -35,7 +35,7 @@ export class AuthService {
     return this.tokenResponder(user.id);
   }
 
-  async login(dto: LoginDto): Promise<AuthResponse> {
+  async login(dto: LoginDto): Promise<TokenResponseEntity> {
     const user = await this.usersService.findUserByEmail(dto.email);
     if (!user) throw new BadRequestException('Invalid email');
 

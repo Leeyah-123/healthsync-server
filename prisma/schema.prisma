@@ -39,6 +39,7 @@ model User {
   posts         Post[]
   comments      Comment[]
   likes         Like[]
+  Routine       WorkoutRoutine[]
 
   @@index([id, username])
   @@map("Users")
@@ -47,12 +48,11 @@ model User {
 model WorkoutPlan {
   id           String   @id @default(cuid()) @db.VarChar()
   name         String   @db.VarChar()
-  userId       String   @map("user_id") @db.VarChar()
-  primaryGoal  String   @map("primary_goal") @db.VarChar()
+  description  String   @db.VarChar()
+  authorId     String   @map("author_id") @db.VarChar()
+  routineId    String   @map("routine_id") @db.VarChar()
   trainingDays String[] @map("training_days") @db.VarChar()
-  plan         Json
-  // duration in minutes of workout plan
-  duration     Int
+  progress     Json
   startDate    DateTime @default(now()) @map("start_date")
   endDate      DateTime @map("end_date")
   createdAt    DateTime @default(now()) @map("created_at")
@@ -60,10 +60,29 @@ model WorkoutPlan {
   completed    Boolean  @default(false)
 
   // relations  
-  author User @relation(fields: [userId], references: [id])
+  author  User           @relation(fields: [authorId], references: [id])
+  routine WorkoutRoutine @relation(fields: [routineId], references: [id])
 
-  @@index([id, userId])
+  @@index([id, authorId])
   @@map("WorkoutPlans")
+}
+
+model WorkoutRoutine {
+  id            String         @id @default(cuid()) @db.VarChar()
+  name          String
+  description   String
+  routine       Json
+  // duration in minutes of workout plan
+  duration      Int
+  owner         User?          @relation(fields: [userId], references: [id])
+  primaryGoal   Goal?          @map("primary_goal")
+  strengthLevel StrengthLevel? @map("strength_level")
+  workoutType   WorkoutType?   @map("workout_type")
+  routineFocus  RoutineFocus?  @map("routine_focus")
+  WorkoutPlan   WorkoutPlan[]
+  userId        String?        @db.VarChar()
+
+  @@map("WorkoutRoutines")
 }
 
 model Notification {
@@ -122,7 +141,6 @@ model Like {
   authorId String @map("author_id") @db.VarChar()
 
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
 
   // relations
   post   Post @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
@@ -140,4 +158,27 @@ enum Role {
   user
   moderator
   admin
+}
+
+enum Goal {
+  LOSE_FAT
+  MAINTAIN_TONE
+  BUILD_MUSCLE
+}
+
+enum WorkoutType {
+  WEIGHTED
+  BODY_WEIGHT
+  NO_EQUIPMENT
+}
+
+enum RoutineFocus {
+  AESTHETICS
+  STRENGTH
+}
+
+enum StrengthLevel {
+  BEGINNER
+  INTERMEDIATE
+  ADVANCED
 }

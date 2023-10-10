@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  HttpStatus,
   NotFoundException,
   Param,
   Patch,
@@ -39,7 +40,7 @@ export class UsersController {
     return this.usersService.getAllUsers();
   }
 
-  @Get('/{id}')
+  @Get('/:id')
   @ApiParam({
     type: 'string',
     name: 'id',
@@ -47,28 +48,36 @@ export class UsersController {
     description: 'ID of user',
   })
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'User with associated ID',
   })
+  @ApiResponse({
+    status: HttpStatus.NOT_FOUND,
+    type: NotFoundException,
+    description: 'User not found',
+  })
   getUserById(@Param('id') id: string) {
-    return this.usersService.findUserById(id);
+    const user = this.usersService.findUserById(id);
+    if (!user) throw new NotFoundException('User Not Found');
+
+    return user;
   }
 
   @Patch('personal-info')
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'Updated user record',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     type: BadRequestException,
     description: 'Bad Request Exception',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User Not Found',
   })
@@ -82,17 +91,17 @@ export class UsersController {
   @Patch('weight')
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'Updated user record',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     type: BadRequestException,
     description: 'Bad Request Exception',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User Not Found',
   })
@@ -103,17 +112,17 @@ export class UsersController {
   @Patch('calorie-intake')
   @UseGuards(AuthGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'Updated user record',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     type: BadRequestException,
     description: 'Bad Request Exception',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User Not Found',
   })
@@ -128,17 +137,17 @@ export class UsersController {
   @Role('admin')
   @UseGuards(AuthGuard, RoleGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'Updated user record',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     type: BadRequestException,
     description: 'Bad Request Exception',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User Not Found',
   })
@@ -150,17 +159,17 @@ export class UsersController {
   @Role('moderator')
   @UseGuards(AuthGuard, RoleGuard)
   @ApiResponse({
-    status: 200,
+    status: HttpStatus.OK,
     type: UserEntity,
     description: 'Updates user record',
   })
   @ApiResponse({
-    status: 400,
+    status: HttpStatus.BAD_REQUEST,
     type: BadRequestException,
     description: 'Bad Request Exception',
   })
   @ApiResponse({
-    status: 404,
+    status: HttpStatus.NOT_FOUND,
     type: NotFoundException,
     description: 'User Not Found',
   })

@@ -198,7 +198,7 @@ export class UsersService {
   }
 
   // TODO: Send notification to user after suspend and unsuspend
-  @OnEvent(SCHEDULE_UNSUSPEND_USER_EVENT)
+  @OnEvent(SCHEDULE_UNSUSPEND_USER_EVENT, { async: true })
   async scheduleUnsuspendUser(payload: SuspendUserDto) {
     await this.notificationsService.sendNotification({
       to: payload.id,
@@ -222,8 +222,7 @@ export class UsersService {
   }
 
   scheduleAction(name: string, days: number, callback: () => void) {
-    // const timeout = setTimeout(callback, 1000 * 60 * 60 * 24 * days);
-    const timeout = setTimeout(callback, 15000);
+    const timeout = setTimeout(callback, 1000 * 60 * 60 * 24 * days);
     this.schedulerRegistry.addTimeout(name, timeout);
   }
 }
