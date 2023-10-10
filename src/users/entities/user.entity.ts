@@ -1,10 +1,9 @@
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
-import { Like, Post, WorkoutPlan } from '@prisma/client';
-import { Role } from 'src/utils/common';
+import { Like, Post, Role, WorkoutPlan } from '@prisma/client';
 
 export class UserEntity {
   @ApiProperty({
-    example: 'dkejiojikmqjnlkqknojnmkjqiji',
+    example: 'clnjakgsx0000f5klt4ttkqbj',
     description: 'Unique identifier for each user',
   })
   id: string;

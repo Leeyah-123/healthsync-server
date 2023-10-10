@@ -4,6 +4,6 @@ import { WorkoutPlanService } from './workout_plan.service';
 
 @Module({
   controllers: [WorkoutPlanController],
-  providers: [WorkoutPlanService]
+  providers: [WorkoutPlanService],
 })
 export class WorkoutPlanModule {}

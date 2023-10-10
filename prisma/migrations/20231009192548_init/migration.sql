@@ -1,3 +1,9 @@
+-- CreateEnum
+CREATE TYPE "Gender" AS ENUM ('male', 'female');
+
+-- CreateEnum
+CREATE TYPE "Role" AS ENUM ('user', 'moderator', 'admin');
+
 -- CreateTable
 CREATE TABLE "Users" (
     "id" VARCHAR NOT NULL,
@@ -5,13 +11,16 @@ CREATE TABLE "Users" (
     "last_name" VARCHAR NOT NULL,
     "email" VARCHAR(255) NOT NULL,
     "password" VARCHAR NOT NULL,
-    "gender" VARCHAR NOT NULL,
+    "gender" "Gender" NOT NULL,
     "username" VARCHAR,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "role" VARCHAR(10) NOT NULL DEFAULT 'user',
-    "currentWeight" DOUBLE PRECISION NOT NULL,
+    "role" "Role" NOT NULL DEFAULT 'user',
+    "currentWeight" DOUBLE PRECISION,
     "weightHistory" JSONB,
+    "currentCalorieIntake" DOUBLE PRECISION,
+    "calorieIntakeHistory" JSONB,
     "suspended" BOOLEAN NOT NULL DEFAULT false,
+    "suspendedBy" TEXT,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -125,4 +134,4 @@ ALTER TABLE "Comments" ADD CONSTRAINT "Comments_author_id_fkey" FOREIGN KEY ("au
 ALTER TABLE "Likes" ADD CONSTRAINT "Likes_post_id_fkey" FOREIGN KEY ("post_id") REFERENCES "Posts"("id") ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "Likes" ADD CONSTRAINT "Likes_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "Users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "Likes" ADD CONSTRAINT "Likes_author_id_fkey" FOREIGN KEY ("author_id") REFERENCES "Users"("id") ON DELETE CASCADE ON UPDATE CASCADE;

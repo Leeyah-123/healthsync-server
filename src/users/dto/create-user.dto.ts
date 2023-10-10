@@ -1,5 +1,7 @@
-import { ApiProperty } from '@nestjs/swagger';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { Gender } from '@prisma/client';
 import {
+  IsAlpha,
   IsEmail,
   IsIn,
   IsNotEmpty,
@@ -13,20 +15,17 @@ import {
 export class CreateUserDto {
   @IsNotEmpty()
   @IsString()
+  @IsAlpha()
   @MinLength(3)
   @ApiProperty({ type: 'string', description: "User's firstname" })
   firstName: string;
 
   @IsNotEmpty()
   @IsString()
+  @IsAlpha()
   @MinLength(3)
   @ApiProperty({ type: 'string', description: "User's lastname" })
   lastName: string;
-
-  @IsNotEmpty()
-  @IsEmail()
-  @ApiProperty({ type: 'string', description: "User's email" })
-  email: string;
 
   @IsNotEmpty()
   @IsString()
@@ -35,22 +34,35 @@ export class CreateUserDto {
     type: 'string',
     description: "User's gender (either male or female)",
   })
-  gender: 'male' | 'female';
+  gender: Gender;
 
   @IsOptional()
   @IsString()
   @MinLength(3)
-  @ApiProperty({ type: 'string', description: "User's username" })
+  @ApiPropertyOptional({ type: 'string', description: "User's username" })
   username?: string;
+
+  @IsNotEmpty()
+  @IsEmail()
+  @ApiProperty({ type: 'string', description: "User's email" })
+  email: string;
 
   @IsNotEmpty()
   @IsString()
   @ApiProperty({ type: 'string', description: "User's password" })
   password: string;
 
-  @IsNotEmpty()
+  @IsOptional()
   @IsNumber()
   @Min(10)
-  @ApiProperty({ type: 'number', description: "User's weight in kg" })
-  weight: number;
+  @ApiPropertyOptional({ type: 'number', description: "User's weight in kg" })
+  weight?: number;
+
+  @IsOptional()
+  @IsNumber()
+  @ApiPropertyOptional({
+    type: 'number',
+    description: "User's current calorie intake in kcal",
+  })
+  calorieIntake?: number;
 }

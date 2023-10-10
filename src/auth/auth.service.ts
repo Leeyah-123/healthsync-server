@@ -1,9 +1,13 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { User } from '@prisma/client';
 import { UsersService } from 'src/users/users.service';
+import { AuthResponse } from 'src/utils/common';
 import { comparePassword, hashPassword } from 'src/utils/password.bcrypt';
-import { AuthResponse, Role } from 'src/utils/common';
 import { LoginDto, SignupDto } from './dto';
 
 @Injectable()
@@ -28,7 +32,7 @@ export class AuthService {
     user = await this.usersService.addUser(dto);
 
     // return jwt secret
-    return this.tokenResponder(user.email, 'user');
+    return this.tokenResponder(user.id);
   }
 
   async login(dto: LoginDto): Promise<AuthResponse> {
@@ -44,11 +48,12 @@ export class AuthService {
     if (!isCorrectPassword)
       throw new BadRequestException('Invalid username or password');
 
-    return this.tokenResponder(user.id, 'user');
+    return this.tokenResponder(user.id);
   }
 
-  async profile(email: string): Promise<Omit<User, 'password'>> {
-    const user: Partial<User> = await this.usersService.findUserByEmail(email);
+  async profile(id: string): Promise<Omit<User, 'password'>> {
+    const user: Partial<User> | null = await this.usersService.findUserById(id);
+    if (!user) throw new NotFoundException('User not found');
 
     delete user.password;
     return user as Omit<User, 'password'>;
@@ -58,8 +63,8 @@ export class AuthService {
     return this.jwtService.sign(payload, { secret: process.env.JWT_SECRET });
   }
 
-  tokenResponder(id: string, role: Role) {
-    const token = this.generateToken({ id, role });
+  tokenResponder(id: string) {
+    const token = this.generateToken({ id });
     return { token };
   }
 }

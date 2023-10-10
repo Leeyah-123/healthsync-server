@@ -15,7 +15,7 @@ import TokenResponseEntity from './entities/token-response.entity';
 import { AuthGuard } from './guards';
 
 @Controller('auth')
-@ApiTags('Authentication (login, signup and profile)')
+@ApiTags('Authentication')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
@@ -44,6 +44,6 @@ export class AuthController {
     type: UserEntity,
   })
   profile(@Request() req: RequestWithUser) {
-    return this.authService.profile(req.user.email);
+    return this.authService.profile(req.user.id);
   }
 }

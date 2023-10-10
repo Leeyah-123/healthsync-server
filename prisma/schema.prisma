@@ -11,21 +11,27 @@ datasource db {
 }
 
 model User {
-  id            String   @id @default(cuid()) @db.VarChar()
-  firstName     String   @map("first_name") @db.VarChar()
-  lastName      String   @map("last_name") @db.VarChar()
-  email         String   @unique @db.VarChar(255)
-  password      String   @db.VarChar()
-  gender        String   @db.VarChar()
-  username      String?  @unique @db.VarChar()
-  createdAt     DateTime @default(now()) @map("created_at")
-  role          String   @default("user") @db.VarChar(10)
+  id                   String   @id @default(cuid()) @db.VarChar()
+  firstName            String   @map("first_name") @db.VarChar()
+  lastName             String   @map("last_name") @db.VarChar()
+  email                String   @unique @db.VarChar(255)
+  password             String   @db.VarChar()
+  gender               Gender
+  username             String?  @unique @db.VarChar()
+  createdAt            DateTime @default(now()) @map("created_at")
+  role                 Role     @default(user)
   // user's current weight in kg
-  currentWeight Float
+  currentWeight        Float?   @map("current_weight")
   // date to weight json object
-  weightHistory Json?
+  weightHistory        Json?    @map("weight_history")
+  // user's current calorie intake in kcal
+  currentCalorieIntake Float?   @map("current_calorie_intake")
+  // date to calorie intake json object
+  calorieIntakeHistory Json?    @map("calorie_intake_history")
   // whether or not a user has been suspended by a forum moderator
-  suspended     Boolean  @default(false)
+  suspended            Boolean  @default(false)
+  // ID of moderator who has most recently suspended this user. Kept for accountability purposes
+  suspendedBy          String?
 
   // relations
   notifications Notification[]
@@ -119,8 +125,19 @@ model Like {
   updatedAt DateTime @updatedAt @map("updated_at")
 
   // relations
-  post   Post  @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
-  author User? @relation(fields: [authorId], references: [id])
+  post   Post @relation(fields: [postId], references: [id], onUpdate: Cascade, onDelete: Cascade)
+  author User @relation(fields: [authorId], references: [id], onUpdate: Cascade, onDelete: Cascade)
 
   @@map("Likes")
+}
+
+enum Gender {
+  male
+  female
+}
+
+enum Role {
+  user
+  moderator
+  admin
 }
