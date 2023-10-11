@@ -197,7 +197,6 @@ export class UsersService {
     });
   }
 
-  // TODO: Send notification to user after suspend and unsuspend
   @OnEvent(SCHEDULE_UNSUSPEND_USER_EVENT, { async: true })
   async scheduleUnsuspendUser(payload: SuspendUserDto) {
     await this.notificationsService.sendNotification({
