@@ -3,11 +3,10 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { EventEmitter2, OnEvent } from '@nestjs/event-emitter';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { SchedulerRegistry } from '@nestjs/schedule';
 import { Prisma, PrismaClient, Role, User } from '@prisma/client';
 import { NotificationsService } from 'src/notifications/notifications.service';
-import { SCHEDULE_UNSUSPEND_USER_EVENT } from 'src/utils/common';
 import { CreateUserDto, SuspendUserDto, UpdatePersonalInfoDto } from './dto';
 
 const prisma = new PrismaClient();
@@ -178,7 +177,7 @@ export class UsersService {
         },
       });
 
-      this.eventEmitter.emit(SCHEDULE_UNSUSPEND_USER_EVENT, dto);
+      this.scheduleUnsuspendUser(dto);
       return user;
     } catch (err) {
       return err;
@@ -197,7 +196,6 @@ export class UsersService {
     });
   }
 
-  @OnEvent(SCHEDULE_UNSUSPEND_USER_EVENT, { async: true })
   async scheduleUnsuspendUser(payload: SuspendUserDto) {
     await this.notificationsService.sendNotification({
       to: payload.id,

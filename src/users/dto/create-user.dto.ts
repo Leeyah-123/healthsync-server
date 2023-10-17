@@ -52,10 +52,19 @@ export class CreateUserDto {
   @ApiProperty({ type: 'string', description: "User's password" })
   password: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsNumber()
   @Min(10)
-  @ApiPropertyOptional({ type: 'number', description: "User's weight in kg" })
+  @ApiProperty({
+    type: 'number',
+    description: "User's height in metres",
+  })
+  height: number;
+
+  @IsNotEmpty()
+  @IsNumber()
+  @Min(10)
+  @ApiProperty({ type: 'number', description: "User's weight in kg" })
   weight?: number;
 
   @IsOptional()

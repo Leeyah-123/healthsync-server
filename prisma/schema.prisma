@@ -20,11 +20,13 @@ model User {
   username             String?  @unique @db.VarChar()
   createdAt            DateTime @default(now()) @map("created_at")
   role                 Role     @default(user)
-  // user's current weight in kg
+  // user's current height in metres
+  height               Int
+  // user's current weight in kilograms
   currentWeight        Float?   @map("current_weight")
   // date to weight json object
   weightHistory        Json?    @map("weight_history")
-  // user's current calorie intake in kcal
+  // user's current calorie intake in k/cal
   currentCalorieIntake Float?   @map("current_calorie_intake")
   // date to calorie intake json object
   calorieIntakeHistory Json?    @map("calorie_intake_history")
