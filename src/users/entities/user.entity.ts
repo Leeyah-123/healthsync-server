@@ -55,6 +55,12 @@ export class UserEntity {
   role: Role;
 
   @ApiProperty({
+    example: '1.5',
+    description: "User's current height in metres",
+  })
+  height: number;
+
+  @ApiProperty({
     example: 35,
     description: "User's current weight in kg",
   })
