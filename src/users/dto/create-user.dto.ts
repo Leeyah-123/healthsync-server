@@ -61,7 +61,7 @@ export class CreateUserDto {
     type: 'number',
     description: "User's height in metres",
   })
-  height: number;
+  height?: number;
 
   @IsOptional()
   @IsNumber()

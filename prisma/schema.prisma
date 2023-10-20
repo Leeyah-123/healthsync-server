@@ -21,7 +21,7 @@ model User {
   createdAt            DateTime @default(now()) @map("created_at")
   role                 Role     @default(user)
   // user's current height in metres
-  height               Int
+  height               Int?
   // user's current weight in kilograms
   currentWeight        Float?   @map("current_weight")
   // date to weight json object

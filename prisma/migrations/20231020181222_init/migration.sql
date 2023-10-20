@@ -27,6 +27,7 @@ CREATE TABLE "Users" (
     "username" VARCHAR,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "role" "Role" NOT NULL DEFAULT 'user',
+    "height" INTEGER,
     "current_weight" DOUBLE PRECISION,
     "weight_history" JSONB,
     "current_calorie_intake" DOUBLE PRECISION,
