@@ -56,7 +56,6 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsNumber()
-  @Min(10)
   @ApiProperty({
     type: 'number',
     description: "User's height in metres",
@@ -65,7 +64,6 @@ export class CreateUserDto {
 
   @IsOptional()
   @IsNumber()
-  @Min(10)
   @ApiProperty({ type: 'number', description: "User's weight in kg" })
   weight?: number;
 
