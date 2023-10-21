@@ -26,8 +26,8 @@ export class WorkoutPlanController {
 
   @Get('/plan')
   @UseGuards(AuthGuard)
-  getWorkoutPlans(@Req() req: RequestWithUser) {
-    return this.workoutPlanService.getWorkoutPlans(req.user.id);
+  getActiveWorkoutPlan(@Req() req: RequestWithUser) {
+    return this.workoutPlanService.getActiveWorkoutPlan(req.user.id);
   }
 
   @Get('/routine')

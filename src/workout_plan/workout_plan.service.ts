@@ -20,8 +20,8 @@ const prisma = new PrismaClient();
 export class WorkoutPlanService {
   constructor(private readonly schedulerRegistry: SchedulerRegistry) {}
 
-  getWorkoutPlans(userId: string): Promise<WorkoutPlan[]> {
-    return prisma.workoutPlan.findMany({
+  getActiveWorkoutPlan(userId: string): Promise<WorkoutPlan | null> {
+    return prisma.workoutPlan.findFirst({
       where: {
         authorId: userId,
       },
