@@ -12,6 +12,7 @@ import {
   WorkoutRoutine,
 } from '@prisma/client';
 import { CreateWorkoutPlanDto, CreateWorkoutRoutineDto } from './dto';
+import { WorkoutPreferencesDto } from './dto/workout-preferences.dto';
 
 const prisma = new PrismaClient();
 
@@ -53,6 +54,17 @@ export class WorkoutPlanService {
   getWorkoutRoutineById(id: string): Promise<WorkoutRoutine | null> {
     return prisma.workoutRoutine.findUnique({
       where: { id },
+    });
+  }
+
+  getPreferredWorkoutRoutines(dto: WorkoutPreferencesDto) {
+    return prisma.workoutRoutine.findMany({
+      where: {
+        primaryGoal: dto.primaryGoal,
+        routineFocus: dto.routineFocus,
+        strengthLevel: dto.strengthLevel,
+        workoutType: dto.workoutType,
+      },
     });
   }
 

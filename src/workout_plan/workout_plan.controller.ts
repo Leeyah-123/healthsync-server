@@ -16,6 +16,7 @@ import { ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/auth/guards';
 import { RequestWithUser } from 'src/utils/common';
 import { CreateWorkoutPlanDto, CreateWorkoutRoutineDto } from './dto';
+import { WorkoutPreferencesDto } from './dto/workout-preferences.dto';
 import { WorkoutPlanService } from './workout_plan.service';
 
 @Controller('workout-plan')
@@ -44,7 +45,7 @@ export class WorkoutPlanController {
     return workoutPlan;
   }
 
-  @Get('/routine/:id')
+  @Get('/routine/id/:id')
   @UseGuards(AuthGuard)
   async getWorkoutRoutineById(@Param('id') id: string) {
     const workoutRoutine =
@@ -53,6 +54,11 @@ export class WorkoutPlanController {
       throw new NotFoundException('Workout routine not found');
 
     return workoutRoutine;
+  }
+
+  @Get('/routine/preferences')
+  async getWorkoutRoutinesByPreferences(@Body() dto: WorkoutPreferencesDto) {
+    return this.workoutPlanService.getPreferredWorkoutRoutines(dto);
   }
 
   @Post('/plan')
