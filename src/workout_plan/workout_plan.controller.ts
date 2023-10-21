@@ -27,7 +27,13 @@ export class WorkoutPlanController {
   @Get('/plan')
   @UseGuards(AuthGuard)
   getActiveWorkoutPlan(@Req() req: RequestWithUser) {
-    return this.workoutPlanService.getActiveWorkoutPlan(req.user.id);
+    const activeWorkoutPlan = this.workoutPlanService.getActiveWorkoutPlan(
+      req.user.id,
+    );
+
+    if (!activeWorkoutPlan)
+      throw new NotFoundException('No active workout found');
+    return activeWorkoutPlan;
   }
 
   @Get('/routine')
